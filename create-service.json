@@ -1,0 +1,29 @@
+{
+    "taskDefinition": "capstone-pgpcc:1",
+    "cluster": "capstone-pgpcc-cluster",
+    "loadBalancers": [
+        {
+            "targetGroupArn": "arn:aws:elasticloadbalancing:us-east-2:976104566718:targetgroup/capstone-target-group-1/aa7c04665fbb17ab",
+            "containerName": "capstone-pgpcc",
+            "containerPort": 80
+        }
+    ],
+    "desiredCount": 1,
+    "launchType": "FARGATE",
+    "schedulingStrategy": "REPLICA",
+    "deploymentController": {
+        "type": "CODE_DEPLOY"
+    },
+    "networkConfiguration": {
+        "awsvpcConfiguration": {
+            "subnets": [
+                "subnet-10e7337b",
+                "subnet-32e4e648"
+            ],
+            "securityGroups": [
+                "sg-0e2a9b85c74a904aa"
+            ],
+            "assignPublicIp": "ENABLED"
+        }
+    }
+}

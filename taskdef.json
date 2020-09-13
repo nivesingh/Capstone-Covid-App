@@ -1,0 +1,24 @@
+{
+    "executionRoleArn": "arn:aws:iam::976104566718:role/ecsTaskExecutionRole",
+    "containerDefinitions": [
+        {
+            "name": "capstone-pgpcc",
+            "image": "<IMAGE_NAME>",
+            "essential": true,
+            "portMappings": [
+                {
+                    "hostPort": 80,
+                    "protocol": "tcp",
+                    "containerPort": 80
+                }
+            ]
+        }
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "networkMode": "awsvpc",
+    "cpu": "256",
+    "memory": "512",
+    "family": "capstone-pgpcc"
+}

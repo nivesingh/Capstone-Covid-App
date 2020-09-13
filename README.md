@@ -1,1 +1,2 @@
-# Capstone-Covid-App
+# pgpcc-capstone-covid
+ PGPCC Capstone project

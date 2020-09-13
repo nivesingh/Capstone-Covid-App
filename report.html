@@ -1,0 +1,185 @@
+<!DOCTYPE HTML>
+<!--
+	Retrospect by TEMPLATED
+	templated.co @templatedco
+	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+	//test code
+-->
+<html>
+
+<head>
+	<title>QuickSight Covid Report</title>
+	<!-- <title>Generic - Retrospect by TEMPLATED</title> -->
+	<meta http-equiv="refresh" content="900">
+
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
+	<link rel="stylesheet" href="assets/css/main.css" />
+	<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+	<!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
+	<script type="text/javascript"
+		src="https://unpkg.com/amazon-quicksight-embedding-sdk@1.0.2/dist/quicksight-embedding-js-sdk.min.js"></script>
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script>
+		$(document).ready(function () {
+			apiGatewayUrl = "https://rnbg1rjw32.execute-api.us-east-2.amazonaws.com/prod/getembedurl"
+			const headers = { 'Content-Type': 'application/json' }
+
+			axios.get(apiGatewayUrl, { headers: headers })
+				.then((response) => {
+					console.log('Got Response!!');
+					console.log('Dashboard URL => ' + response.data.EmbedUrl);
+					embedDashboard(response.data.EmbedUrl);;
+				})
+				.catch(function (error) {
+					console.log('Error obtaining QuickSight dashboard embed url.');
+				});
+
+			function onVisualLoaded() {
+				var div = document.getElementById("loadedContainer");
+				div.innerHTML = "Dashboard fully loaded";
+			}
+
+			function onError() {
+				var div = document.getElementById("errorContainer");
+				div.innerHTML = "your seesion has expired";
+			}
+			function embedDashboard(embedUrl) {
+				var containerDiv = document.getElementById("dashboardContainer");
+				var params = {
+					url: embedUrl,
+					container: containerDiv,
+					scrolling: "no",
+                	height: "1000px",
+				};
+				var dashboard = QuickSightEmbedding.embedDashboard(params);
+				dashboard.on('error', onError);
+				dashboard.on('load', onVisualLoaded);
+			}
+		});
+	</script>
+</head>
+
+<body>
+
+	<!-- Header -->
+	<header id="header">
+		<h1><a href="index.html">Home</a></h1>
+		<a href="#nav">Menu</a>
+	</header>
+
+	<!-- Nav -->
+	<nav id="nav">
+		<ul class="links">
+			<li><a href="index.html">Home</a></li>
+			<li><a href="report.html">Report</a></li>
+			<li><a href="project.html">Project</a></li>
+			<li><a href="team.html">Team</a></li>
+		</ul>
+	</nav>
+
+	<!-- Main -->
+	<section id="main" class="wrapper">
+		<div class="container">
+			<header class="major special">
+				<h2>Covid Live Report</h2>
+				<p>Report by Amazon QuickSight</p>
+			</header>
+
+			<div id="dashboardContainer"></div>
+			<h3>DATA INGETION</h3>
+			<p>We have used following AWS Services to prepare data for analysis dashboard.</p>
+
+			<a href="#" class="image fit"><img src="images/data-ingestion.png" alt="" /></a>
+
+
+			<h3>AWS Data Exchange</h3>
+			<p>We have used above Data provider and exported their data in S3 for further Analysis.</p>
+			<a href="#" class="image fit"><img src="images/enigma.png" alt="" /></a>
+
+			<h3>Amazon S3</h3>
+			<p>We have used Amazon S3 to store data for Analysis</p>
+			<a href="#" class="image fit"><img src="images/s3.png" alt="" /></a>
+
+			<h3>AWS Glue Crawlers</h3>
+			<p>Crawlers has been created to create a schema for Analysis</p>
+			<a href="#" class="image fit"><img src="images/glue_crawler.png" alt="" /></a>
+
+			<h3>AWS Glue Database and Tables</h3>
+			<p>Crawler will create a database and table and convert the data with schema.</p>
+			<a href="#" class="image fit"><img src="images/glue_db_table.png" alt="" /></a>
+
+			<h3>AWS Athena</h3>
+			<p>Athena can be used to query data generated in Glue data catalog.</p>
+			<a href="#" class="image fit"><img src="images/athena.png" alt="" /></a>
+
+			<h3>Amazon QuickSight</h3>
+			<p>Amazon QuickSight is is used to create meaningful analytics dashboard using Athena data catalog.</p>
+			<a href="#" class="image fit"><img src="images/quicksight-analysis.png" alt="" /></a>
+
+			<h3>QuickSight Dashboard Embedding</h3>
+			<p>We have used following AWS Services to embed quicksight dashboard to the app.</p>
+
+			<a href="#" class="image fit"><img src="images/dashboard_embed.png" alt="" /></a>
+			<h3>AWS Lambda</h3>
+			<p>We have written one Lambda function to get the Embed Url.</p>
+			<a href="#" class="image fit"><img src="images/lambda_fn.png" alt="" /></a>
+
+			<h3>AWS STS</h3>
+			<p>We have written code to authenticate our user and get the embeddable dashboard URL</p>
+			<p>When a user accesses our app, the app should assume the IAM role (created above) on the user's behalf. Then it should add the user to Amazon QuickSight, if that user doesn't already exist. Next, it should pass an identifier as the unique role session ID. 
+				Doing this ensures that each viewer of the dashboard is uniquely provisioned in Amazon QuickSight. It also enforces per-user settings, such as the row-level security and dynamic defaults for parameters.</p>
+			<p>To assume the role, we have choose AssumeRole of AWS Security Token Service (AWS STS) API operations with using IAM identity to assume the role.
+				The assume-role operation returns three output parameters: the access key, the secret key, and the session token.</p>
+			<p>Finally, to get a signed URL for the dashboard, call get-dashboard-embed-url in the Lambda function. This returns the embeddable dashboard URL as output.</p>
+			<a href="#" class="image fit"><img src="images/lambda_fn.png" alt="" /></a>
+			<a href="#" class="image fit"><img src="images/sts.png" alt="" /></a>
+
+			<h3>AWS API Gateway</h3>
+			<p>We have created an API to invoke our Lambda function. In Lambda Using the assumed role, invoke QuickSight API to generate embed url. And Embed url is passed back to client via API Gateway.</p>
+			<a href="#" class="image fit"><img src="images/api.png" alt="" /></a>
+			<p>We have used this API endpoint in the App.</p>
+			<p>Once API Gateway response is received, JavaScript passes embed Url and a div to embedDashboard function (This function is present in the QuickSight JS library that is added to the portal page). The url is embedded into an iframe within the identified div and loads the dashboard from QuickSight. The dashboard is fully interactive just as in QuickSight portal. </p>
+			<a href="#" class="image fit"><img src="images/code.png" alt="" /></a>
+
+			<p>Thank you for Reading! </p>
+
+		</div>
+	</section>
+
+	<!-- Footer -->
+	<footer id="footer">
+		<div class="inner">
+			<!-- <ul class="icons">
+				<li><a href="#" class="icon fa-facebook">
+						<span class="label">Facebook</span>
+					</a></li>
+				<li><a href="#" class="icon fa-twitter">
+						<span class="label">Twitter</span>
+					</a></li>
+				<li><a href="#" class="icon fa-instagram">
+						<span class="label">Instagram</span>
+					</a></li>
+				<li><a href="#" class="icon fa-linkedin">
+						<span class="label">LinkedIn</span>
+					</a></li>
+			</ul> -->
+			<ul class="copyright">
+				<li>&copy; CapstoneTeam17</li>
+
+			</ul>
+		</div>
+	</footer>
+
+	<!-- Scripts -->
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/skel.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
+
+</body>
+
+</html>

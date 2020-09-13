@@ -1,0 +1,9 @@
+version: '3'
+services:
+  web:
+    image: pgpcc-capstone-covid        
+    build: .
+    container_name: capstone-container  
+    restart: always
+    ports:
+      - "80:80"
